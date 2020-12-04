@@ -1,6 +1,6 @@
-[![Alt text](https://www.uniqconsulting.ch/images/logo.png)](https://www.uniqconsulting.ch/)
+<a href="https://www.uniqconsulting.ch"><img src="https://www.uniqconsulting.ch/fileadmin/images/logo-main.png" alt="uniQconsulting" width="250px"/></a>
 
-# ansible.rolename
+# ansible.firewall
 
 This Ansible Role installs and configures the default firewall.
 It can also work with ipsets-geoip from uniqconsulting.geoip.
