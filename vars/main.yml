@@ -1,0 +1,19 @@
+---
+# Here belong all variables, that can be changed by a vars-file,
+# a playbook or a include.
+
+# Role
+role_include_files: # add for example requirements.yml
+- install
+- config
+
+# Packages
+firewall_packages_remove:
+- firewalld
+- firewalld-filesystem
+- python3-firewall
+firewall_packages_add:
+- iptables-services
+- iptables-utils
+
+...

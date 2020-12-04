@@ -1,0 +1,7 @@
+#!/usr/bin/ansible-playbook 
+---
+- name: firewall Setup
+  hosts: localhost
+  roles:
+    - uniqconsulting.firewall
+...

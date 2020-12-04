@@ -1,0 +1,20 @@
+---
+
+- name: remove not needed packages
+  yum:
+    name: "{{ firewall_packages_remove }}"
+    state: absent
+
+- name: install needed packages
+  yum:
+    name: "{{ firewall_packages_add }}"
+    state: present
+  notify: restart iptables
+
+- name: enable iptables
+  service:
+    name: iptables
+    enabled: yes
+    state: started
+
+...

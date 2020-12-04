@@ -1,0 +1,9 @@
+---
+
+- name: generate iptables set
+  template: 
+    src: iptables.j2
+    dest: /etc/sysconfig/iptables
+  notify: restart iptables
+
+...

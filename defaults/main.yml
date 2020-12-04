@@ -1,0 +1,12 @@
+---
+# Here belong all variables, that can be changed by a vars-file,
+# a playbook or a include.
+
+firewall_open_ports:
+- port: 22
+  protocol: tcp
+firewall_geoip_maps: []
+firewall_port_forwarding: []
+firewall_snat_interfaces: []
+
+...
