@@ -1,7 +1,7 @@
 ############################################################
-{% for interface_name in (ansible_interfaces | symmetric_difference["lo"]) %}
+{% for interface_name in (ansible_interfaces | symmetric_difference(["lo"])) %}
 {% set interface = hostvars[inventory_hostname]['ansible_%s' | format(interface_name)] %}
-{% if interface.ipv4.address | ansible.netcommon.ipaddr('private') %}
+{% if interface.ipv4.address | ipaddr('private') %}
 # LAN: {{ interface_name }} - {{ interface.ipv4.address }}
 {% else %}
 # WAN: {{ interface_name }} - {{ interface.ipv4.address }}

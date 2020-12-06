@@ -4,7 +4,7 @@
 #################
 
 # === Ports ===
-iptables_open_ports:
+firewall_open_ports:
 # Example:
 # - port: 443
 #   protocol: tcp
@@ -14,26 +14,26 @@ iptables_open_ports:
   protocol: tcp
 
 # === Port Forward ===
-# iptables_port_forwarding:
+# firewall_port_forwarding:
 # Example:
 # - src_port: 8443
 #   dest_ip: 10.0.10.20
 #   dest_port: 8443
 #   protocol: tcp
 #   If not set, will take ip of these variables:
-#   dest_interface: "{{ iptables_lan_interface }}"
-#   src_interface: "{{ iptables_wan_interface }}"
-#   src_ip: "{{ iptables_wan_ip }}"
+#   dest_interface: "eth0"
+#   src_interface: "eth1"
+#   src_ip: "{{ firewall_wan_ip }}"
 
 
 # === Activate SNAT on an interface ===
-# iptables_snat_interfaces:
+# firewall_snat_interfaces:
 # - interface: eth1
 #   ip: 10.0.10.1
 
 # === GeoIP Sets ===
 # Only activate if geoip is installed
-# iptables_geoip_maps:
+# firewall_geoip_maps:
 # - name: west_europe
 #   type: allow
 #   countries:
