@@ -4,8 +4,8 @@
 
 # Role
 role_include_files: # add for example requirements.yml
-- install
-- config
+- install.yml
+- config.yml
 
 # Packages
 firewall_packages_remove:
