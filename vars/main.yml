@@ -15,5 +15,6 @@ firewall_packages_remove:
 firewall_packages_add:
 - iptables-services
 - iptables-utils
+- python3-netaddr
 
 ...
