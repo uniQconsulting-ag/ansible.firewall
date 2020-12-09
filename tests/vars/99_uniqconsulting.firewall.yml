@@ -49,6 +49,12 @@ firewall_open_ports:
 #   - CN
 #   - RU
 
+# === Local Port Forward (lo) ===
+# firewall_local_port_forwarding:
+# Example:
+# - src_port: 8443
+#   dest_port: 8443
+#   protocol: tcp
 
 ...
 

@@ -8,5 +8,6 @@ firewall_open_ports:
 firewall_geoip_maps: []
 firewall_port_forwarding: []
 firewall_snat_interfaces: []
+firewall_local_port_forwarding: []
 
 ...

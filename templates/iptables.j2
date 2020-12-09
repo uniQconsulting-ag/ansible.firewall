@@ -126,6 +126,12 @@ COMMIT
 -A PREROUTING -d {% if frw.src_ip is defined %}{{ frw.src_ip }}/32{% else %}{{ iptables_wan_ip }}/32{% endif %} -i {% if frw.src_interface is defined %}{{ frw.src_interface }}{% else %}{{ iptables_wan_interface }}{% endif %} -p {{ frw.protocol }} -m {{ frw.protocol }} --dport {{ frw.src_port }} -j DNAT --to-destination {{ frw.dest_ip }}:{{ frw.dest_port }}
 {% endfor %}
 
+{% for frw in firewall_local_port_forwarding %}
+-A PREROUTING -s 127.0.0.1 -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
+{% endfor %}
+
+
+
 ############################################################
 -A POSTROUTING -m limit --limit 3/min --limit-burst 3 -j LOG --log-prefix "POSTROUTING: "
 
@@ -133,4 +139,15 @@ COMMIT
 {% for itemset in firewall_snat_interfaces %}
 -A POSTROUTING -o {{ itemset.interface }} -j SNAT --to-source {{ itemset.ip }}
 {% endfor %}
+
+
+
+
+############################################################
+# OUTPUT
+
+{% for frw in firewall_local_port_forwarding %}
+-A OUTPUT -s 127.0.0.1 -p t{{ frw.protocol }}cp --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
+{% endfor %}
+
 COMMIT
