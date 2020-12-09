@@ -147,7 +147,7 @@ COMMIT
 # OUTPUT
 
 {% for frw in firewall_local_port_forwarding %}
--A OUTPUT -s 127.0.0.1 -p t{{ frw.protocol }}cp --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
+-A OUTPUT -s 127.0.0.1 -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
 {% endfor %}
 
 COMMIT
