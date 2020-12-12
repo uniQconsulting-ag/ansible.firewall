@@ -13,3 +13,4 @@ do
     curl https://www.ipdeny.com/ipblocks/data/aggregated/$country-aggregated.zone > /tmp/ipblock-aggregated.zone
     cat /tmp/ipblock-aggregated.zon | xargs -I{} ipset add country_$country {}
 next
+rm -rf /tmp/geoip_download
