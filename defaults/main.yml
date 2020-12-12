@@ -10,4 +10,21 @@ firewall_port_forwarding: []
 firewall_snat_interfaces: []
 firewall_local_port_forwarding: []
 
+
+firewall_geoip_universal_allow:
+- 127.0.0.1/32
+- 10.0.0.0/8
+- 172.16.0.0/12
+- 192.168.0.0/16
+
+firewall_geoip_countries:
+- ch
+- de
+- fr
+- it
+- au
+- ru
+- cn
+
+
 ...

@@ -5,6 +5,7 @@
 # Role
 role_include_files: # add for example requirements.yml
 - install.yml
+- geoip.yml
 - config.yml
 
 # Packages
@@ -16,4 +17,15 @@ firewall_packages_add:
 - iptables-services
 - iptables-utils
 
+
+
+
+firewall_geoip_packages:
+- ipset
+
+firewall_geoip_ipset_save: /etc/sysconfig/ipsets
+firewall_geoip_ipset_command: /usr/sbin/ipset
+firewall_geoip_ipset_save_script: /usr/sbin/ipsets-save
+firewall_geoip_ipset_restore_script: /usr/sbin/ipsets-restore
+firewall_geoip_ipset_update_script: /usr/bin/ipsets-update
 ...
