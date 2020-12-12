@@ -31,7 +31,7 @@
 
   - name: generate update-script
     template:
-      src: ipsets-update
+      src: ipsets-update.j2
       dest: "{{ firewall_geoip_ipset_update_script }}"
       owner: root
       group: root
