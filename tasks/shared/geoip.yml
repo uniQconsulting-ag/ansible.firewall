@@ -45,7 +45,7 @@
   - name: update cronjob for update-task
     cron:
       name: "geoip-update"
-      minute: "{{ 59 | random(start=1 }}"
+      minute: "35"
       hour: "0"
       job: "{{ firewall_geoip_ipset_update_script }} > /dev/null"
 
