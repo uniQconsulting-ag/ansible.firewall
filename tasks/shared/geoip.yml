@@ -86,6 +86,6 @@
     when: not nginx_update_only
 
 
-  when: geoip_ipsets
+  when: firewall_geoip_maps | length > 0
 
 ...
