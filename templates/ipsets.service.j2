@@ -1,13 +1,13 @@
 [Unit]
 Description=ipsets service wrapper
-AssertPathExists={{ geoip_ipset_save }}
+AssertPathExists={{ firewall_geoip_ipset_save }}
 
 [Service]
 Type=simple
 RemainAfterExit=yes
-ExecStart={{ geoip_ipset_restore_script }}
-ExecReload={{ geoip_ipset_restore_script }}
-ExecStop={{ geoip_ipset_save_script }}
+ExecStart={{ firewall_geoip_ipset_restore_script }}
+ExecReload={{ firewall_geoip_ipset_restore_script }}
+ExecStop={{ firewall_geoip_ipset_save_script }}
 
 [Install]
 WantedBy=basic.target
