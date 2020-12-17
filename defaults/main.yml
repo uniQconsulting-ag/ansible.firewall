@@ -22,7 +22,8 @@ firewall_geoip_countries:
 - de
 - fr
 - it
-- au
+- at
+- li
 - ru
 - cn
 
