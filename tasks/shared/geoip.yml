@@ -9,7 +9,6 @@
     yum:
       name: "{{ firewall_geoip_packages }}"
       state: present
-    when: not nginx_update_only
 
   - name: create universal-allow sets
     shell: ipset create universal_allow nethash
@@ -36,7 +35,6 @@
       owner: root
       group: root
       mode: '0750'
-    when: not nginx_update_only
 
   - name: run update-script
     shell: "bash {{ firewall_geoip_ipset_update_script }}"
@@ -56,7 +54,6 @@
       owner: root
       group: root
       mode: '0700'
-    when: not nginx_update_only
 
   - name: generate ipsets-restore
     template:
@@ -65,25 +62,21 @@
       owner: root
       group: root
       mode: '0700'
-    when: not nginx_update_only
 
   - name: generate service
     template:
       src: ipsets.service.j2
       dest: /etc/systemd/system/ipsets.service
-    when: not nginx_update_only
 
   - name: reload services
     systemd:
       daemon_reload: yes
-    when: not nginx_update_only
 
   - name: start & enable ipsets service
     systemd:
       name: ipsets
       state: started
       enabled: yes
-    when: not nginx_update_only
 
 
   when: firewall_geoip_maps | length > 0
