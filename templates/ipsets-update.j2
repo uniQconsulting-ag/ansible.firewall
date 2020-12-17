@@ -10,8 +10,8 @@ mkdir /tmp/geoip_download
 
 for country in $countries
 do
-    ipset create country_$country nethash
-    ipset flush country_$country nethash
+    ipset create country_$country nethash > /dev/null
+    ipset flush country_$country
     curl https://www.ipdeny.com/ipblocks/data/aggregated/$country-aggregated.zone > /tmp/geoip_download/ipblock-aggregated_$country.zone
     cat /tmp/geoip_download/ipblock-aggregated_$country.zone | xargs -I{} ipset add country_$country {}
 done
