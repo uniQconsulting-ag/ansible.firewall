@@ -8,7 +8,7 @@ countries="{{ firewall_geoip_countries | join(' ') | lower }}"
 
 mkdir /tmp/geoip_download
 
-for country in countries
+for country in $countries
 do
     ipset create country_$country nethash
     ipset flush country_$country nethash
