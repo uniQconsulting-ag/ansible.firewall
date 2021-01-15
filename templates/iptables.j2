@@ -127,7 +127,7 @@ COMMIT
 {% endfor %}
 
 {% for frw in firewall_local_port_forwarding %}
--A PREROUTING -s 127.0.0.1 -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
+-A PREROUTING -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
 {% endfor %}
 
 
@@ -147,7 +147,7 @@ COMMIT
 # OUTPUT
 
 {% for frw in firewall_local_port_forwarding %}
--A OUTPUT -s 127.0.0.1 -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
+-A OUTPUT -p {{ frw.protocol }} --dport {{ frw.src_port }} -j REDIRECT --to {{ frw.dest_port }}
 {% endfor %}
 
 COMMIT
