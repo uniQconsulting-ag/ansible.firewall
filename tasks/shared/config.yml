@@ -11,6 +11,18 @@
   notify: restart iptables
   when: iptables_stats.stdout == "true"
 
+- name: debug msg
+  debug:
+    msg: "IPTABLES HAS BEEN MANUALLY CHANGED"
+  failed_when: iptables_stats.stdout == "false"
+  ignore_errors: yes
+  when: iptables_stats.stdout == "false"
+
+- name: generate MD5 sum
+  shell: md5sum /etc/sysconfig/iptables > /etc/sysconfig/iptables.ansible_md5
+  register: iptables_stats
+  when: iptables_stats.stdout == "true"
+  
 - name: activate ipv4 forwarding on boot
   lineinfile:
     path: /etc/sysctl.conf
