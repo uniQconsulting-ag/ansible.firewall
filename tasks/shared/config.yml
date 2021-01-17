@@ -1,10 +1,15 @@
 ---
 
+- name: Check MD5 sum
+  shell: test -f /etc/sysconfig/iptables.ansible_md5 || md5sum /etc/sysconfig/iptables > /etc/sysconfig/iptables.ansible_md5 ; md5sum --check /etc/sysconfig/iptables.ansible_md5 > /dev/null 2>&1 && echo "true" || echo "false"
+  register: iptables_stats
+
 - name: generate iptables set
   template: 
     src: iptables.j2
     dest: /etc/sysconfig/iptables
   notify: restart iptables
+  when: iptables_stats.stdout == "true"
 
 - name: activate ipv4 forwarding on boot
   lineinfile:
