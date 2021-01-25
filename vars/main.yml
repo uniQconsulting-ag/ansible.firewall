@@ -1,12 +1,4 @@
 ---
-# Here belong all variables, that can be changed by a vars-file,
-# a playbook or a include.
-
-# Role
-role_include_files: # add for example requirements.yml
-- install.yml
-- geoip.yml
-- config.yml
 
 # Packages
 firewall_packages_remove:
@@ -16,9 +8,6 @@ firewall_packages_remove:
 firewall_packages_add:
 - iptables-services
 - iptables-utils
-
-
-
 
 firewall_geoip_packages:
 - ipset
