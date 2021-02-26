@@ -3,7 +3,6 @@
 # ansible.firewall
 
 This Ansible Role installs and configures the default firewall.
-It can also work with ipsets-geoip from uniqconsulting.geoip.
 
 Installation with ansible-galaxy:
 

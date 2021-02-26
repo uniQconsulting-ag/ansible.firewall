@@ -3,9 +3,9 @@
 # config-file loads, etc. that will be started
 # if a change on a task was made
 
-- name: restart iptables
+- name: restart nftables
   service:
-    name: iptables
+    name: nftables
     state: restarted
 
 ...

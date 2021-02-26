@@ -1,28 +1,26 @@
 ---
 
-- name: Check MD5 sum
-  shell: test -f /etc/sysconfig/iptables.ansible_md5 || md5sum /etc/sysconfig/iptables > /etc/sysconfig/iptables.ansible_md5 ; md5sum --check /etc/sysconfig/iptables.ansible_md5 > /dev/null 2>&1 && echo "true" || echo "false"
-  register: iptables_stats
+- name: create conf.d
+  file:
+    state: directory
+    path: /etc/nftables/conf.d
+    owner: root
+    group: root
 
-- name: generate iptables set
+- name: generate main.nft
   template: 
-    src: iptables.j2
-    dest: /etc/sysconfig/iptables
-  notify: restart iptables
-  when: iptables_stats.stdout == "true"
+    src: nftables.nft.j2
+    dest: /etc/nftables/main.nft
+  when: firewall_table_name is not defined or firewall_table_name is none
+  notify: restart nftables
 
-- name: debug msg
-  debug:
-    msg: "IPTABLES HAS BEEN MANUALLY CHANGED"
-  failed_when: iptables_stats.stdout == "false"
-  ignore_errors: yes
-  when: iptables_stats.stdout == "false"
+- name: generate custom.nft
+  template: 
+    src: nftables.nft.j2
+    dest: /etc/nftables/conf.d/{{ firewall_table_name }}.nft
+  when: firewall_table_name is defined and firewall_table_name is not none
+  notify: restart nftables
 
-- name: generate MD5 sum
-  shell: md5sum /etc/sysconfig/iptables > /etc/sysconfig/iptables.ansible_md5
-  register: iptables_stats
-  when: iptables_stats.stdout == "true"
-  
 - name: activate ipv4 forwarding on boot
   lineinfile:
     path: /etc/sysctl.conf
