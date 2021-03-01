@@ -44,11 +44,11 @@
 
 - name: port forwarding
   include_tasks: subtasks/forward_port.yml
-  with_items: "{{ firewall_local_port_forwarding }}"
+  with_items: "{{ firewall_port_forwarding }}"
 
 - name: local port forwarding
-  include_tasks: subtasks/forward_port.yml
-  with_items: "{{ firewall_port_forwarding }}"
+  include_tasks: subtasks/forward_local_port.yml
+  with_items: "{{ firewall_local_port_forwarding }}"
 
 - name: configure snat
   include_tasks: subtasks/snat.yml
