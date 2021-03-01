@@ -2,7 +2,7 @@
 
 - name: generate command
   set_fact:
-    nft_command: "oifname \"{{ item.interface }}\" snat {{ item.ip }}"
+    nft_command: "oifname \"{{ item.interface }}\" snat to {{ item.ip }}"
 
 - name: check if rule exists
   shell: nft list chain default POSTROUTING | grep "{{ nft_command }}" && echo "1" || echo "0"
