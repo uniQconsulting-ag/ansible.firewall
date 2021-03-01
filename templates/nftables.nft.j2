@@ -93,7 +93,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
                 # Allow All Interfaces
                 {% endraw %}
-                iifname {{ "{" }} "{{ ansible_interfaces | join '", "' }}" {{ "}" }} accept
+                iifname {{ "{" }} "{{ ansible_interfaces | join('", "') }}" {{ "}" }} accept
                 {% raw %}
 
                 # Save marks persistently
