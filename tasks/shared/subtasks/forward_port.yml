@@ -2,7 +2,7 @@
 
 - name: generate command
   set_fact:
-    nft_command: "meta l4proto {{ item.protocol }} {{ item.protocol }} dport {{ item.dest_port }} ip daddr {{ item.dest_ip }} {% if item.dest_interface is defined %}oifname {{ item.dest_interface }} {% endif %}{% if item.src_interface is defined and item.src_interface is not none %}iifname {{ port.source }} {% endif %}accept"
+    nft_command: "{{ item.protocol }} dport {{ item.dest_port }} ip daddr {{ item.dest_ip }} {% if item.dest_interface is defined %}oifname {{ item.dest_interface }} {% endif %}{% if item.src_interface is defined and item.src_interface is not none %}iifname {{ port.source }} {% endif %}accept"
 
 - name: check if rule exists
   shell: nft list chain default FORWARD | grep "{{ nft_command }}" && echo "1" || echo "0"
