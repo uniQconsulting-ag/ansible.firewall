@@ -3,10 +3,6 @@
 #    Firewall
 #################
 
-# === Settings ===
-# Only set, if not base setup / if role-configured
-# firewall_table_name: ""
-
 # === Ports ===
 # Example:
 firewall_open_ports:

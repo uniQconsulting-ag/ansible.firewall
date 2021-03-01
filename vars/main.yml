@@ -4,6 +4,7 @@ firewall_packages_remove:
 - firewalld
 - firewalld-filesystem
 - python3-firewall
+- iptables
 - iptables-services
 - iptables-utils
 firewall_packages_add:
