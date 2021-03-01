@@ -2,6 +2,29 @@
 {% if firewall_table_name is defined and firewall_table_name is not none %}
 # drop any existing nftables ruleset
 flush ruleset
+
+# table inet ansible_debug {
+#         chain INPUT {
+#                 type filter hook input priority -10 ; policy accept
+#                 log flags all prefix "INPUT DEBUG: "
+#         }
+#         chain FORWARD {
+#                 type filter hook forward priority -10 ; policy accept
+#                 log flags all prefix "FORWARD DEBUG: "
+#         }
+#         chain OUTPUT {
+#                 type filter hook output priority -10 ; policy accept
+#                 log flags all prefix "OUTPUT DEBUG: "
+#         }
+#         chain PREROUTING {
+#                 type filter hook prerouting priority -10 ; policy accept
+#                 log flags all prefix "PREROUTING DEBUG: "
+#         }
+#         chain POSTROUTING {
+#                 type filter hook postrouting priority -10 ; policy accept
+#                 log flags all prefix "POSTROUTING DEBUG: "
+#         }
+# }
 {% endif %}
 
 # a common table for both IPv4 and IPv6
@@ -27,22 +50,14 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 iifname { "lo" } accept
                 {% endif %}
 
-                # GeoIP
-
                 # Open Ports
                 {% for port in firewall_open_ports %}
                 # accept = mark set 10
                 {{ port.protocol }} dport {{ port.port }} {% if port.source is defined and port.source is not none %} ip saddr {{ port.source }}{% endif %} mark set 10
                 {% endfor %}
-        }
 
-        chain OUTPUT {
-                # Default Settings
-                type filter hook output priority 1
-                policy accept
-
-                # Allow All Interfaces
-                iifname {{ "{" }} "{{ ansible_interfaces | join '", "' }}" {{ "}" }} accept
+                # Save marks persistently
+                ct mark set mark
         }
 
         chain FORWARD {
@@ -55,14 +70,40 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # accept = mark set 10
                 {% if frw.dest_interface is defined %}oifname {{ frw.dest_interface }}{% endif %} {% if frw.src_interface is defined and frw.src_interface is not none %} iifname {{ port.source }}{% endif %} meta l4proto {{ frw.protocol }} {{ frw.protocol }} dport {{ frw.dest_port }} ip daddr {{ frw.dest_ip }} mark set 10
                 {% endfor %}
+
+                # Save marks persistently
+                ct mark set mark
+        }
+
+        chain OUTPUT {
+                # Default Settings
+                type filter hook output priority 1
+                policy accept
+
+                # Allow All Interfaces
+                iifname {{ "{" }} "{{ ansible_interfaces | join '", "' }}" {{ "}" }} accept
+
+                # Save marks persistently
+                ct mark set mark
         }
         
-
-
         ##########
         #   NAT
         ##########
 
+        chain OUTPUT {
+                # Default Settings
+                type nat hook output priority 1
+                policy accept
+
+                # Outward natting
+                {% for frw in firewall_local_port_forwarding %}
+                {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
+                {% endfor %}
+
+                # Save marks persistently
+                ct mark set mark
+        }
 
         chain PREROUTING {
                 # Default Settings
@@ -80,6 +121,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 {% for frw in firewall_local_port_forwarding %}
                 {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
                 {% endfor %}
+
+                # Save marks persistently
+                ct mark set mark
         }
 
         chain POSTROUTING {
@@ -91,24 +135,14 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 {% for itemset in firewall_snat_interfaces %}
                 oifname {{ itemset.interface }} snat {{ itemset.ip }}
                 {% endfor %}
-        }
 
-        chain OUTPUT {
-                # Default Settings
-                type nat hook output priority 1
-                policy accept
-
-                # Outward natting
-                {% for frw in firewall_local_port_forwarding %}
-                {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
-                {% endfor %}
+                # Save marks persistently
+                ct mark set mark
         }
 
 }
 
 {% if firewall_table_name is defined and firewall_table_name is not none %}
-
-
 table inet ansible_DROPALL {
 
         chain INPUT {
@@ -116,11 +150,14 @@ table inet ansible_DROPALL {
                 type filter hook input priority 999
                 policy accept
 
+                # Restore Marks
+                meta mark set ct mark
+
                 # Process previously marked packets
                 meta mark 10 accept # 10 = accepted by filter rule
-                meta mark 20 drop # 20 = explicit drop by filter rule
                 
                 # Drop All
+                log flags all prefix "INPUT DROP: "
                 reject with icmpx type port-unreachable
         }
 
@@ -131,9 +168,9 @@ table inet ansible_DROPALL {
 
                 # Process previously marked packets
                 meta mark 10 accept # 10 = accepted by filter rule
-                meta mark 20 drop # 20 = explicit drop by filter rule
                 
                 # Drop All
+                log flags all prefix "FORWARD DROP: "
                 reject with icmpx type port-unreachable
         }
 }
