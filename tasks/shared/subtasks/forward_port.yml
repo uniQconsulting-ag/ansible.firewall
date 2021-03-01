@@ -14,7 +14,7 @@
   when: nft_ruleset_cmd.stdout == "0"
 
 - name: run command PREROUTING
-  shell: nft add rule default FORWARD {{ item.protocol }} dport {{ item.src_port }} ip daddr {{ item.src_ip | default(ansible_default_ipv4.address) }} dnat {{ item.dest_ip }}:{{ item.dest_port }}
+  shell: nft add rule default PREROUTING {{ item.protocol }} dport {{ item.src_port }} ip daddr {{ item.src_ip | default(ansible_default_ipv4.address) }} dnat {{ item.dest_ip }}:{{ item.dest_port }}
   when: nft_ruleset_cmd.stdout == "0"
 
 - name: save nftables
