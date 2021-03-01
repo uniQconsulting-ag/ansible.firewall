@@ -9,12 +9,14 @@
   yum:
     name: "{{ firewall_packages_add }}"
     state: present
+  register: install_task
   notify: restart nftables
 
 - name: enable nftables
   service:
     name: nftables
     enabled: yes
+  register: enable_task
   notify: restart nftables
 
 ...
