@@ -27,6 +27,9 @@ table default {
         chain FORWARD {
                 type filter hook forward priority 1
                 policy drop
+
+                # Basic rules
+                ct state established,related accept
         }
 
         chain OUTPUT {
