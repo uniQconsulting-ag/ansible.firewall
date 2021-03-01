@@ -5,7 +5,7 @@
     nft_command: "oifname \"{{ item.interface }}\" snat to {{ item.ip }}"
 
 - name: check if rule exists
-  shell: nft list chain default POSTROUTING | grep "{{ nft_command }}" && echo "1" || echo "0"
+  shell: nft list chain default POSTROUTING | grep '{{ nft_command }}' && echo "1" || echo "0"
   register: nft_ruleset_cmd
   changed_when: false     
   
