@@ -12,6 +12,7 @@
   lineinfile:
     path: /etc/sysconfig/nftables.conf
     line: flush ruleset
+    insertbefore: '^#*include "\/etc\/nftables\/main.nft"$'
   notify: restart nftables
 
 - block:
