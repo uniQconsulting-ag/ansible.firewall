@@ -22,7 +22,7 @@ nft insert rule 'default POSTROUTING log flags all prefix "POSTROUTING DEBUG: "'
 
 ## Requirements
 
-* Currently only tested with CentOS 8
+* Currently only tested with RHEL 8
 * Ansible 2.9 or higher is required for this Ansible Role
 
 ## Dependencies
