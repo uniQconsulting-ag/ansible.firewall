@@ -48,6 +48,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 type filter hook input priority 1
                 policy accept # Drop Rule
 
+                # Restore Marks
+                meta mark set ct mark
+
                 # Basic rules
                 ct state established,related accept
 
@@ -75,6 +78,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 type filter hook forward priority 1
                 policy accept
 
+                # Restore Marks
+                meta mark set ct mark
+
                 # Open Ports
                 {% endraw %}
                 # accept = mark set 10
@@ -91,6 +97,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # Default Settings
                 type filter hook output priority 1
                 policy accept
+
+                # Restore Marks
+                meta mark set ct mark
 
                 # Allow All Interfaces
                 {% endraw %}
@@ -109,6 +118,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # Default Settings
                 type nat hook prerouting priority 1
                 policy accept
+
+                # Restore Marks
+                meta mark set ct mark
 
                 # Port Forwarding
                 # like: ip daddr 123.4.56.78 tcp dport 8443 dnat 10.0.0.2:8443
@@ -132,6 +144,10 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # Default Settings
                 type nat hook postrouting priority 1
                 policy accept
+                masquerade
+
+                # Restore Marks
+                meta mark set ct mark
 
                 # Outward natting
                 {% endraw %}
