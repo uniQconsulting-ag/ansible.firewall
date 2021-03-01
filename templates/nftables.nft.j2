@@ -1,5 +1,6 @@
 
 {% if firewall_table_name is defined and firewall_table_name is not none %}
+{% raw %}
 # drop any existing nftables ruleset
 flush ruleset
 
@@ -25,17 +26,23 @@ flush ruleset
 #                 log flags all prefix "POSTROUTING DEBUG: "
 #         }
 # }
+{% endraw %}
 {% endif %}
+{% raw %}
 
 # a common table for both IPv4 and IPv6
+{% endraw %}
 table inet ansible_{{ firewall_table_name | default('default') }} {
+{% raw %}
 
         ##########
         # FILTER
         ##########
 
         chain INPUT {
+                {% endraw %}
                 {% if firewall_table_name is defined and firewall_table_name is not none %}
+                {% raw %}
                 # Default Settings
                 type filter hook input priority 1
                 policy accept # Drop Rule
@@ -48,6 +55,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
                 # Allow loop interface
                 iifname { "lo" } accept
+                {% endraw %}
                 {% endif %}
 
                 # Open Ports
@@ -55,6 +63,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # accept = mark set 10
                 {{ port.protocol }} dport {{ port.port }} {% if port.source is defined and port.source is not none %} ip saddr {{ port.source }}{% endif %} mark set 10
                 {% endfor %}
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -66,10 +75,12 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 policy accept
 
                 # Open Ports
+                {% endraw %}
                 {% for frw in firewall_port_forwarding %}
                 # accept = mark set 10
                 {% if frw.dest_interface is defined %}oifname {{ frw.dest_interface }}{% endif %} {% if frw.src_interface is defined and frw.src_interface is not none %} iifname {{ port.source }}{% endif %} meta l4proto {{ frw.protocol }} {{ frw.protocol }} dport {{ frw.dest_port }} ip daddr {{ frw.dest_ip }} mark set 10
                 {% endfor %}
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -81,7 +92,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 policy accept
 
                 # Allow All Interfaces
+                {% endraw %}
                 iifname {{ "{" }} "{{ ansible_interfaces | join '", "' }}" {{ "}" }} accept
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -97,9 +110,11 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 policy accept
 
                 # Outward natting
+                {% endraw %}
                 {% for frw in firewall_local_port_forwarding %}
                 {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
                 {% endfor %}
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -112,6 +127,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
                 # Port Forwarding
                 # like: ip daddr 123.4.56.78 tcp dport 8443 dnat 10.0.0.2:8443
+                {% endraw %}
                 {% for frw in firewall_port_forwarding %}
                 {% if frw.src_ip is defined %}ip daddr {{ frw.src_ip }}{% endif %} {{ frw.protocol }} dport {{ frw.src_port }} dnat {{ frw.dest_ip }}:{{ frw.dest_port }}
                 {% endfor %}
@@ -121,6 +137,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 {% for frw in firewall_local_port_forwarding %}
                 {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
                 {% endfor %}
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -132,9 +149,11 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 policy accept
 
                 # Outward natting
+                {% endraw %}
                 {% for itemset in firewall_snat_interfaces %}
                 oifname {{ itemset.interface }} snat {{ itemset.ip }}
                 {% endfor %}
+                {% raw %}
 
                 # Save marks persistently
                 ct mark set mark
@@ -142,7 +161,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
 }
 
+                {% endraw %}
 {% if firewall_table_name is defined and firewall_table_name is not none %}
+{% raw %}
 table inet ansible_DROPALL {
 
         chain INPUT {
@@ -177,4 +198,5 @@ table inet ansible_DROPALL {
 
 # Include sub-config files
 include "/etc/nftables/conf.d/*.nft"
+{% endraw %}
 {% endif %}
