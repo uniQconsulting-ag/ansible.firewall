@@ -21,6 +21,10 @@
     file:
       path: /tmp/base_setup.nft
       state: absent
+
+  - name: save nftables
+    shell: nft list ruleset > /etc/nftables/main.nft
+    when: nft_ruleset_cmd.stdout == "0"
   # / BLOCK
   when: include_task.changed or install_task.changed or enable_task.changed
 

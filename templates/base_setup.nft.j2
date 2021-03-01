@@ -22,17 +22,11 @@ table default {
 
                 # Open Ports
                 tcp dport 22 accept
-
-                # Log Drops
-                log flags all prefix "INPUT DROP: "
         }
 
         chain FORWARD {
                 type filter hook forward priority 1
                 policy drop
-
-                # Log Drops
-                log flags all prefix "FORWARD DROP: "
         }
 
         chain OUTPUT {
