@@ -8,6 +8,12 @@
   register: include_task
   notify: restart nftables
 
+- name: enable flush
+  lineinfile:
+    path: /etc/sysconfig/nftables.conf
+    line: flush ruleset
+  notify: restart nftables
+
 - block:
   - name: generate base setup script
     template:
