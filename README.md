@@ -10,6 +10,16 @@ Installation with ansible-galaxy:
 ansible-galaxy install uniqconsulting.firewalld
 ```
 
+Debug Commands:
+```bash
+nft insert rule 'default INPUT log flags all prefix "INPUT DEBUG: "'
+nft insert rule 'default FORWARD log flags all prefix "FORWARD DEBUG: "'
+nft insert rule 'default OUTPUT log flags all prefix "OUTPUT DEBUG: "'
+nft insert rule 'default OUTPUT_NAT log flags all prefix "OUTPUT_NAT DEBUG: "'
+nft insert rule 'default PREROUTING log flags all prefix "PREROUTING DEBUG: "'
+nft insert rule 'default POSTROUTING log flags all prefix "POSTROUTING DEBUG: "'
+```
+
 ## Requirements
 
 * Currently only tested with CentOS 8
