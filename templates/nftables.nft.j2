@@ -54,13 +54,13 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 meta l4proto { icmp, icmpv6 } accept
 
                 # Allow loop interface
-                iifname { "lo" } accept
+                iifname { "lo" } accept 
                 {% endraw %}
                 {% endif %}
 
                 # Open Ports
-                {% for port in firewall_open_ports %}
                 # accept = mark set 10
+                {% for port in firewall_open_ports %}
                 {{ port.protocol }} dport {{ port.port }} {% if port.source is defined and port.source is not none %} ip saddr {{ port.source }}{% endif %} mark set 10
                 {% endfor %}
                 {% raw %}
@@ -76,9 +76,9 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
                 # Open Ports
                 {% endraw %}
-                {% for frw in firewall_port_forwarding %}
                 # accept = mark set 10
-                {% if frw.dest_interface is defined %}oifname {{ frw.dest_interface }}{% endif %} {% if frw.src_interface is defined and frw.src_interface is not none %} iifname {{ port.source }}{% endif %} meta l4proto {{ frw.protocol }} {{ frw.protocol }} dport {{ frw.dest_port }} ip daddr {{ frw.dest_ip }} mark set 10
+                {% for frw in firewall_port_forwarding %}
+                meta l4proto {{ frw.protocol }} {{ frw.protocol }} dport {{ frw.dest_port }} ip daddr {{ frw.dest_ip }} {% if frw.dest_interface is defined %}oifname {{ frw.dest_interface }}{% endif %} {% if frw.src_interface is defined and frw.src_interface is not none %} iifname {{ port.source }}{% endif %} mark set 10
                 {% endfor %}
                 {% raw %}
 
@@ -113,7 +113,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
                 # like: ip daddr 123.4.56.78 tcp dport 8443 dnat 10.0.0.2:8443
                 {% endraw %}
                 {% for frw in firewall_port_forwarding %}
-                {% if frw.src_ip is defined %}ip daddr {{ frw.src_ip }}{% endif %} {{ frw.protocol }} dport {{ frw.src_port }} dnat {{ frw.dest_ip }}:{{ frw.dest_port }}
+                {{ frw.protocol }} dport {{ frw.src_port }} {% if frw.src_ip is defined %}ip daddr {{ frw.src_ip }}{% endif %} dnat {{ frw.dest_ip }}:{{ frw.dest_port }}
                 {% endfor %}
 
                 # Local Port Forwarding
