@@ -1,5 +1,12 @@
 ---
 
+- name: enable main.nft include
+  lineinfile:
+    path: /etc/sysconfig/nftables.conf
+    line: include "/etc/nftables/main.nft"
+    regexp: '^#*include "\/etc\/nftables\/main.nft"$'
+  notify: restart nftables
+
 - name: create conf.d
   file:
     state: directory
