@@ -104,22 +104,6 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
         #   NAT
         ##########
 
-        chain OUTPUT {
-                # Default Settings
-                type nat hook output priority 1
-                policy accept
-
-                # Outward natting
-                {% endraw %}
-                {% for frw in firewall_local_port_forwarding %}
-                {{ frw.protocol }} dport {{ frw.src_port }} redirect to {{ frw.dest_port }}
-                {% endfor %}
-                {% raw %}
-
-                # Save marks persistently
-                ct mark set mark
-        }
-
         chain PREROUTING {
                 # Default Settings
                 type nat hook prerouting priority 1
