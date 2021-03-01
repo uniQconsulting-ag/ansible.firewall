@@ -8,8 +8,8 @@
 # firewall_table_name: ""
 
 # === Ports ===
-firewall_open_ports:
 # Example:
+firewall_open_ports:
 # - port: 443
 #   protocol: tcp
 #   source: 10.0.10.0/24
@@ -17,8 +17,8 @@ firewall_open_ports:
   protocol: tcp
 
 # === Port Forward ===
-# firewall_port_forwarding:
 # Example:
+# firewall_port_forwarding:
 # - src_port: 8443
 #   dest_ip: 10.0.10.20
 #   dest_port: 8443
@@ -36,8 +36,8 @@ firewall_open_ports:
 
 
 # === Local Port Forward (lo) ===
-# firewall_local_port_forwarding:
 # Example:
+# firewall_local_port_forwarding:
 # - src_port: 8443
 #   dest_port: 8443
 #   protocol: tcp

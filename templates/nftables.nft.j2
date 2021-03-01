@@ -1,5 +1,5 @@
 
-{% if firewall_table_name is defined and firewall_table_name is not none %}
+{% if firewall_table_name is not defined or firewall_table_name is none %}
 {% raw %}
 # drop any existing nftables ruleset
 flush ruleset
@@ -41,7 +41,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 
         chain INPUT {
                 {% endraw %}
-                {% if firewall_table_name is defined and firewall_table_name is not none %}
+                {% if firewall_table_name is not defined or firewall_table_name is none %}
                 {% raw %}
                 # Default Settings
                 type filter hook input priority 1
@@ -146,7 +146,7 @@ table inet ansible_{{ firewall_table_name | default('default') }} {
 }
 
                 {% endraw %}
-{% if firewall_table_name is defined and firewall_table_name is not none %}
+{% if firewall_table_name is not defined or firewall_table_name is none %}
 {% raw %}
 table inet ansible_DROPALL {
 
