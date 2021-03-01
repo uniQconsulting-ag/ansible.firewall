@@ -1,0 +1,66 @@
+---
+
+- name: enable main.nft include
+  lineinfile:
+    path: /etc/sysconfig/nftables.conf
+    line: include "/etc/nftables/main.nft"
+    regexp: '^#*include "\/etc\/nftables\/main.nft"$'
+  register: include_task
+  notify: restart nftables
+
+- name: enable flush
+  lineinfile:
+    path: /etc/sysconfig/nftables.conf
+    line: flush ruleset
+    insertbefore: '^#*include "\/etc\/nftables\/main.nft"$'
+  notify: restart nftables
+
+- block:
+  - name: generate base setup script
+    template:
+      src: base_setup.nft.j2
+      dest: /tmp/base_setup.nft
+
+  - name: run base setup
+    shell: nft -f /tmp/base_setup.nft
+
+  - name: cleanup base setup
+    file:
+      path: /tmp/base_setup.nft
+      state: absent
+
+  - name: save nftables
+    shell: nft list ruleset > /etc/nftables/main.nft
+    notify: restart nftables
+  # / BLOCK
+  when: include_task.changed or install_task.changed or enable_task.changed
+
+- name: activate ipv4 forwarding on boot
+  lineinfile:
+    path: /etc/sysctl.conf
+    line: "net.ipv4.ip_forward = 1"
+  register: forward_boot
+
+- name: activate ipv4 forwarding now
+  shell: "sysctl -w net.ipv4.ip_forward=1"
+  when: forward_boot.changed
+
+- name: open ports
+  include_tasks: subtasks/open_port.yml
+  with_items: "{{ firewall_open_ports }}"
+
+- name: port forwarding
+  include_tasks: subtasks/forward_port.yml
+  with_items: "{{ firewall_port_forwarding }}"
+
+- name: local port forwarding
+  include_tasks: subtasks/forward_local_port.yml
+  with_items: "{{ firewall_local_port_forwarding }}"
+
+- name: configure snat
+  include_tasks: subtasks/snat.yml
+  with_items: "{{ firewall_snat_interfaces }}"
+
+
+
+...

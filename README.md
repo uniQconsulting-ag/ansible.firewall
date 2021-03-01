@@ -3,12 +3,21 @@
 # ansible.firewall
 
 This Ansible Role installs and configures the default firewall.
-It can also work with ipsets-geoip from uniqconsulting.geoip.
 
 Installation with ansible-galaxy:
 
 ``` bash
 ansible-galaxy install uniqconsulting.firewalld
+```
+
+Debug Commands:
+```bash
+nft insert rule 'default INPUT log flags all prefix "INPUT DEBUG: "'
+nft insert rule 'default FORWARD log flags all prefix "FORWARD DEBUG: "'
+nft insert rule 'default OUTPUT log flags all prefix "OUTPUT DEBUG: "'
+nft insert rule 'default OUTPUT_NAT log flags all prefix "OUTPUT_NAT DEBUG: "'
+nft insert rule 'default PREROUTING log flags all prefix "PREROUTING DEBUG: "'
+nft insert rule 'default POSTROUTING log flags all prefix "POSTROUTING DEBUG: "'
 ```
 
 ## Requirements

@@ -1,0 +1,66 @@
+{% raw %}
+flush ruleset
+
+table default {
+
+        ##########
+        # FILTER
+        ##########
+
+        chain INPUT {
+                type filter hook input priority 1
+                policy drop
+
+                # Basic rules
+                ct state established,related accept
+
+                # Allow icmp
+                meta l4proto { icmp, icmpv6 } accept
+
+                # Allow loop interface
+                iifname { "lo" } accept 
+
+                # Open Ports
+                tcp dport 22 accept
+        }
+
+        chain FORWARD {
+                type filter hook forward priority 1
+                policy drop
+
+                # Basic rules
+                ct state established,related accept
+        }
+
+        chain OUTPUT {
+                type filter hook output priority 1
+                policy accept
+
+                # Allow All Interfaces
+                {% endraw %}
+                oifname {{ "{" }} "{{ ansible_interfaces | join('", "') }}" {{ "}" }} accept
+                {% raw %}
+        }
+        
+        ##########
+        #   NAT
+        ##########
+
+        chain OUTPUT_NAT {
+                type nat hook output priority 1
+                policy accept
+        }
+
+        chain PREROUTING {
+                type nat hook prerouting priority 1
+                policy accept
+        }
+
+        chain POSTROUTING {
+                type nat hook postrouting priority 1
+                policy accept
+                masquerade
+        }
+
+}
+{% endraw %}

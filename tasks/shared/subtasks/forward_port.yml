@@ -1,0 +1,24 @@
+---
+
+- name: generate command
+  set_fact:
+    nft_command: "{{ item.protocol }} dport {{ item.dest_port }} ip daddr {{ item.dest_ip }} {% if item.dest_interface is defined %}oifname {{ item.dest_interface }} {% endif %}{% if item.src_interface is defined and item.src_interface is not none %}iifname {{ port.source }} {% endif %}accept"
+
+- name: check if rule exists
+  shell: nft list chain default FORWARD | grep "{{ nft_command }}" && echo "1" || echo "0"
+  register: nft_ruleset_cmd
+  changed_when: false
+  
+- name: run command FORWARD
+  shell: nft add rule default FORWARD {{ nft_command }}
+  when: nft_ruleset_cmd.stdout == "0"
+
+- name: run command PREROUTING
+  shell: nft add rule default PREROUTING {{ item.protocol }} dport {{ item.src_port }} ip daddr {{ item.src_ip | default(ansible_default_ipv4.address) }} dnat {{ item.dest_ip }}:{{ item.dest_port }}
+  when: nft_ruleset_cmd.stdout == "0"
+
+- name: save nftables
+  shell: nft list ruleset > /etc/nftables/main.nft
+  when: nft_ruleset_cmd.stdout == "0"
+
+...

@@ -4,18 +4,17 @@
 #################
 
 # === Ports ===
-firewall_open_ports:
 # Example:
+firewall_open_ports:
 # - port: 443
 #   protocol: tcp
-#   geoip_map: west_europe
 #   source: 10.0.10.0/24
 - port: 22
   protocol: tcp
 
 # === Port Forward ===
-# firewall_port_forwarding:
 # Example:
+# firewall_port_forwarding:
 # - src_port: 8443
 #   dest_ip: 10.0.10.20
 #   dest_port: 8443
@@ -31,27 +30,10 @@ firewall_open_ports:
 # - interface: eth1
 #   ip: 10.0.10.1
 
-# === GeoIP Sets ===
-# Only activate if geoip is installed
-# firewall_geoip_maps:
-# - name: west_europe
-#   type: allow
-#   countries:
-#   - CH
-#   - DE
-#   - FR
-#   - IT
-#   - LI
-#   
-# - name: no_hackers
-#   type: deny
-#   countries:
-#   - CN
-#   - RU
 
 # === Local Port Forward (lo) ===
-# firewall_local_port_forwarding:
 # Example:
+# firewall_local_port_forwarding:
 # - src_port: 8443
 #   dest_port: 8443
 #   protocol: tcp

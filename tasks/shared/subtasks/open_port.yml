@@ -1,0 +1,20 @@
+---
+
+- name: generate command
+  set_fact:
+    nft_command: "{{ item.protocol }} dport {{ item.port }} {% if item.source is defined and item.source is not none %}ip saddr {{ item.source }} {% endif %}accept"
+
+- name: check if rule exists
+  shell: nft list chain default INPUT | grep "{{ nft_command }}" && echo "1" || echo "0"
+  register: nft_ruleset_cmd
+  changed_when: false
+  
+- name: run command
+  shell: nft add rule default INPUT {{ nft_command }}
+  when: nft_ruleset_cmd.stdout == "0"
+
+- name: save nftables
+  shell: nft list ruleset > /etc/nftables/main.nft
+  when: nft_ruleset_cmd.stdout == "0"
+
+...

@@ -1,0 +1,24 @@
+---
+
+- name: generate command
+  set_fact:
+    nft_command: "{{ item.protocol }} dport {{ item.src_port }} redirect to :{{ item.dest_port }}"
+
+- name: check if rule exists
+  shell: nft list chain default PREROUTING | grep "{{ nft_command }}" && echo "1" || echo "0"
+  register: nft_ruleset_cmd
+  changed_when: false
+  
+- name: run command PREROUTING
+  shell: nft add rule default PREROUTING {{ nft_command }}
+  when: nft_ruleset_cmd.stdout == "0"
+
+- name: run command OUTPUT_NAT
+  shell: nft add rule default OUTPUT_NAT {{ nft_command }}
+  when: nft_ruleset_cmd.stdout == "0"
+
+- name: save nftables
+  shell: nft list ruleset > /etc/nftables/main.nft
+  when: nft_ruleset_cmd.stdout == "0"
+
+...

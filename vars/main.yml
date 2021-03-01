@@ -1,13 +1,15 @@
 ---
 
-# Packages
 firewall_packages_remove:
 - firewalld
 - firewalld-filesystem
 - python3-firewall
-firewall_packages_add:
+- iptables
 - iptables-services
 - iptables-utils
+firewall_packages_add:
+- nftables
+- wget
 
 firewall_geoip_packages:
 - ipset
